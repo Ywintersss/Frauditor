@@ -166,6 +166,5 @@ uploads/
 
 #Test data
 test_data/
-ICG-BillCycles.code-workspace
 *.xlsx
 staticfiles
