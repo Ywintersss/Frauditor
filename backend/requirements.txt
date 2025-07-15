@@ -36,3 +36,5 @@ tzdata==2025.2 ; sys_platform == 'win32'
     # via django
 whitenoise==6.9.0
     # via backend
+pandas==2.3.1
+    # via scraper
