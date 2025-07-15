@@ -168,3 +168,6 @@ uploads/
 test_data/
 *.xlsx
 staticfiles
+
+# Ignore csv
+/scraper/*.csv
