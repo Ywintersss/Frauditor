@@ -9,7 +9,8 @@
     "permissions": [
         "activeTab",
         "storage",
-        "tabs"
+        "tabs",
+        "scripting"
     ],
     "content_scripts": [
         {
@@ -17,7 +18,8 @@
                 "https://shopee.com.my/*"
             ],
             "js": [
-                "content.js"
+                "content.js",
+                "utils.js"
             ]
         }
     ],
