@@ -1,5 +1,9 @@
+const CONTENT_SELECTORS = {
+    productCommentList: ".shopee-product-comment-list",
+    navigationBar: ".shopee-page-controller.product-ratings__page-controller"
+}
 const observer = new MutationObserver((mutations, obs) => {
-    const target = document.querySelector(".shopee-product-comment-list");
+    const target = document.querySelector(CONTENT_SELECTORS.productCommentList);
     if (target) {
         obs.disconnect();
         observeElement(target);
@@ -18,8 +22,9 @@ function injectCSS() {
 }
 
 function injectIntoTarget(target, message, uniqueIdentifier, hasExistingDiv = false) {
-    injectCSS()
-
+    if (document.getElementById(uniqueIdentifier) && !hasExistingDiv) {
+        return;
+    }
     if (hasExistingDiv) {
         const boxToModify = document.getElementById(uniqueIdentifier);
         if (boxToModify) {
@@ -32,29 +37,49 @@ function injectIntoTarget(target, message, uniqueIdentifier, hasExistingDiv = fa
     target.style.position = "relative";
 
     const injectBox = document.createElement("div");
-    injectBox.id = uniqueIdentifier;
-    injectBox.classList = "injected-class loading-check";
-    injectBox.innerText = message;
+    const spinner = document.createElement("img");
 
+    injectBox.id = uniqueIdentifier;
+    injectBox.classList = "injected-class";
+
+    spinner.src = chrome.runtime.getURL("assets/spinner.gif");
+    spinner.alt = "Loading...";
+    spinner.style.width = "30px";
+    spinner.style.height = "30px";
+    spinner.style.marginLeft = "8px";
+
+    injectBox.appendChild(spinner);
     target.appendChild(injectBox);
 }
 
-async function processComments(el) {
+async function processComments() {
     console.log("Processing comments");
-    const target = document.querySelector(".shopee-product-comment-list");
+    const target = document.querySelector(CONTENT_SELECTORS.productCommentList);
+    let sameComments = false;
     if (target) {
         [...target.childNodes].map((node, i) => {
             const injectionTarget = node.childNodes[1];
             if (!injectionTarget) return;
 
+            // Checks if the comments changed from pagination or not 
+            if (injectionTarget.lastChild.classList.contains("injected-class")) {
+                sameComments = true;
+            }
+
             injectIntoTarget(injectionTarget, "loading...", `b${i + 1}`);
         });
+
+        detectCommonClass();
+
+        if (sameComments) {
+            return;
+        }
+
+        let data = await getReviews();
+
+        const res = await chrome.runtime.sendMessage({ action: "initFraudDetection", data: data })
     }
 
-    detectCommonClass();
-    let data = await getReviews();
-
-    const res = await chrome.runtime.sendMessage({ action: "initFraudDetection", data: data })
 }
 
 function observeElement(el) {
@@ -62,7 +87,7 @@ function observeElement(el) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 console.log("Review section is in view");
-                processComments(entry.target);
+                processComments();
             }
         });
     });
@@ -135,3 +160,4 @@ observer.observe(document.body, {
     childList: true,
     subtree: true
 });
+injectCSS()
