@@ -42,7 +42,7 @@ jobs:
     - name: Load environment variables from dev.env
       uses: falti/dotenv-action@v1
       with:
-        path: ./dev.env
+        path: backend/dev.env
 
     - name: Install dependencies
       run: |

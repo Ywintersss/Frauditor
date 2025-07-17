@@ -15,19 +15,20 @@ async function getValidity() {
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.action === "initFraudDetection") {
+        console.log("Div in view message received!");
+
         (async () => {
-            // process msg.data
             let results = await getValidity();
             const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
             if (tabs.length > 0) {
                 chrome.tabs.sendMessage(tabs[0].id, {
                     action: "validityResults",
-                    data: msg.data
+                    data: results
                 });
             }
             sendResponse({ status: "✅ sent to content script" });
         })();
 
-        return true;
+        return true; // 🚨 IMPORTANT: keep sendResponse valid
     }
 });
