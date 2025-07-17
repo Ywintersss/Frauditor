@@ -1,3 +1,4 @@
+
 // Selectors
 const SELECTORS = {
     productSection: '.shopee-product-comment-list',
@@ -7,6 +8,7 @@ const SELECTORS = {
     nextButton: '.shopee-icon-button.shopee-icon-button--right',
     ratingIcon: 'icon-rating-solid'
 };
+
 
 const CONFIG = {
     pageDelay: 2000,       // Delay between page navigation (ms)
@@ -37,30 +39,8 @@ function downloadJSON() {
     }
 }
 
-const nextPage = (singlePage) => {
-    if (singlePage) {
-        return;
-    }
-    let pageNavDiv = document.querySelector(SELECTORS.pageController)
-    const pageNavButtons = [...pageNavDiv.childNodes]
-    if (pageNavButtons[pageNavButtons.length - 2].innerText == "...") {
-        document.querySelector(SELECTORS.nextButton).click()
-        setTimeout(() => {
-            getReviews()
-        }, CONFIG.pageDelay);
 
-    } else {
-        if (count != 2) {
-            count++
-            document.querySelector(SELECTORS.nextButton).click()
-            setTimeout(() => {
-                getReviews()
-            }, CONFIG.pageDelay);
-        }
-    }
-}
-
-const getReviews = (singlePage = false) => {
+const getReviews = () => {
     const currentNum = Object.keys(final).length
     let reviewsParent = document.querySelectorAll(`.${commonClass}`)
     for (let i = 0; i < reviewsParent.length; i++) {
@@ -154,7 +134,32 @@ const getReviews = (singlePage = false) => {
         }
     }
 
-    nextPage(singlePage)
+    let pageNavDiv = document.querySelector(SELECTORS.pageController)
+    const pageNavButtons = [...pageNavDiv.childNodes]
+    if (pageNavButtons[pageNavButtons.length - 2].innerText == "...") {
+        document.querySelector(SELECTORS.nextButton).click()
+        setTimeout(() => {
+            getReviews()
+        }, CONFIG.pageDelay);
+
+    } else {
+        if (count != 2) {
+            count++
+            document.querySelector(SELECTORS.nextButton).click()
+            setTimeout(() => {
+                getReviews()
+            }, CONFIG.pageDelay);
+        }
+    }
 
     console.log(final)
+}
+
+if (productSection) {
+    let firstChild = productSection.firstChild
+    commonClass = firstChild.className
+}
+
+if (commonClass != null) {
+    getReviews()
 }
