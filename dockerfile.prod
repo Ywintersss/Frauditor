@@ -19,12 +19,15 @@ COPY backend/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Commented for docker-compose
-# EXPOSE 8000
+# Copy project files
+COPY backend/. .
 
-# Copy Django project files
-# Commented for docker-compose
-# COPY backend/. .
+# Expose port
+EXPOSE 8000
 
-# Default command (will be overriden with docker-compose)
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+# Collect static files (WhiteNoise-compatible)
+RUN python manage.py collectstatic --noinput
+
+# Default command (will be added into render)
+CMD ["gunicorn", "--chdir", ".", "Frauditor.wsgi:application", "--bind", "0.0.0.0:8000"]
