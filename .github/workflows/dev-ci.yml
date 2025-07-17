@@ -10,8 +10,23 @@ on:
 
 jobs:
   build-and-test:
-    name: Setup and Test Django
+    name: Setup and Test Postgres and Django
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: local-frauditor
+          POSTGRES_USER: frauditor-admin
+          POSTGRES_PASSWORD: Hacker6666
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     defaults:
       run:
         working-directory: backend
@@ -23,6 +38,11 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
+
+    - name: Load environment variables from dev.env
+      uses: falti/dotenv-action@v1
+      with:
+        path: backend/dev.env
 
     - name: Install dependencies
       run: |
@@ -57,4 +77,4 @@ jobs:
           context: .
           file: ./dockerfile.dev
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/frauditor:dev
+          tags: ${{ secrets.DOCKER_USERNAME }}/frauditor-dev:dev
