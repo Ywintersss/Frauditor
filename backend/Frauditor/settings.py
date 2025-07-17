@@ -7,20 +7,15 @@ from pathlib import Path
 from dotenv import load_dotenv
 from typing import Optional
 
+load_dotenv()
+
+
 def is_true(value: Optional[str]) -> bool:
     return value and value.lower() in ("1", "true", "t")
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
-
-if ENVIRONMENT == "development":
-    load_dotenv(BASE_DIR / "dev.env")
-else:
-    load_dotenv()
-
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -74,14 +69,14 @@ WSGI_APPLICATION = "Frauditor.wsgi.application"
 
 # Database
 DATABASES = {
-    # "default": {
-    #     "ENGINE": "django.db.backends.postgresql",
-    #     "NAME": os.getenv("POSTGRES_DB"),
-    #     "USER": os.getenv("POSTGRES_USER"),
-    #     "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-    #     "HOST": os.getenv("POSTGRES_HOST"),
-    #     "PORT": os.getenv("POSTGRES_PORT"),
-    # }
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": os.getenv("POSTGRES_HOST"),
+        "PORT": os.getenv("POSTGRES_PORT"),
+    }
 }
 
 CSRF_TRUSTED_ORIGINS = (

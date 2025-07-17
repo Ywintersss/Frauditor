@@ -8,67 +8,21 @@ const SELECTORS = {
     ratingIcon: 'icon-rating-solid'
 };
 
-const CONFIG = {
-    pageDelay: 2000,       // Delay between page navigation (ms)
-};
-
 const productSection = document.querySelector(SELECTORS.productSection)
 let commonClass = null
 let count = 0
-let final = {}
 
-function downloadJSON() {
-    try {
-        const dataStr = JSON.stringify(final, null, 2);
-        const dataBlob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(dataBlob);
+async function getReviews() {
+    // Reset final object for each page
+    let final = {};
 
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `shopee_reviews_${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        URL.revokeObjectURL(url);
-        log('Reviews downloaded successfully!', 'success');
-    } catch (error) {
-        log(`Error downloading file: ${error.message}`, 'error');
-    }
-}
-
-const nextPage = (singlePage) => {
-    if (singlePage) {
-        return;
-    }
-    let pageNavDiv = document.querySelector(SELECTORS.pageController)
-    const pageNavButtons = [...pageNavDiv.childNodes]
-    if (pageNavButtons[pageNavButtons.length - 2].innerText == "...") {
-        document.querySelector(SELECTORS.nextButton).click()
-        setTimeout(() => {
-            getReviews()
-        }, CONFIG.pageDelay);
-
-    } else {
-        if (count != 2) {
-            count++
-            document.querySelector(SELECTORS.nextButton).click()
-            setTimeout(() => {
-                getReviews()
-            }, CONFIG.pageDelay);
-        }
-    }
-}
-
-const getReviews = (singlePage = false) => {
-    const currentNum = Object.keys(final).length
     let reviewsParent = document.querySelectorAll(`.${commonClass}`)
     for (let i = 0; i < reviewsParent.length; i++) {
         const rev = reviewsParent[i]
         const mainContainer = rev.children[1]
         const purchaserInfoContainer = mainContainer.childNodes
 
-        // Username, ratings and item variation/locatoin + date of purchase
+        // Username, ratings and item variation/location + date of purchase
         const purchaserInfoNodes = purchaserInfoContainer[0].childNodes
         const ratings = [...purchaserInfoNodes[1].childNodes[0].childNodes]
         const itemPurchaseInformationContainer = purchaserInfoNodes[2].childNodes[0].childNodes
@@ -111,7 +65,6 @@ const getReviews = (singlePage = false) => {
         let reviewContent = ""
 
         if (hasReviewContent) {
-
             const subreviewContainer = [...reviewContentContainer.childNodes[0].childNodes]
             const withSubreview = subreviewContainer.length > 0 ? true : false
 
@@ -131,7 +84,6 @@ const getReviews = (singlePage = false) => {
             reviewContent = reviewContentContainer.childNodes[1].innerText ? reviewContentContainer.childNodes[1].innerText : ""
         }
 
-
         // Check if has image
         const imageContainer = [...purchaserInfoContainer].find((child) => {
             return child.className == SELECTORS.imageContainer
@@ -139,7 +91,7 @@ const getReviews = (singlePage = false) => {
 
         const hasImage = imageContainer ? true : false
 
-        final[`review ${i + 1 + currentNum}`] = {
+        final[`review ${i + 1}`] = {
             username: purchaserInfoNodes[0].innerText || null,
             ratings: ratings.filter(rating => {
                 return rating.className.baseVal.includes(SELECTORS.ratingIcon)
@@ -150,11 +102,15 @@ const getReviews = (singlePage = false) => {
             subreview: subreview,
             review_content: reviewContent,
             has_image: hasImage
-
         }
     }
 
-    nextPage(singlePage)
+    return final;
+}
 
-    console.log(final)
+function detectCommonClass() {
+    const parent = document.querySelector('.shopee-product-comment-list');
+    if (parent && parent.firstChild) {
+        commonClass = parent.firstChild.className;
+    }
 }
