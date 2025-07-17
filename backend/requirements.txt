@@ -32,9 +32,23 @@ typing-extensions==4.14.1
     #   typing-inspection
 typing-inspection==0.4.1
     # via pydantic
-tzdata==2025.2 ; sys_platform == 'win32'
-    # via django
+tzdata==2025.2
+    # via
+    #   django
+    #   pandas
 whitenoise==6.9.0
     # via backend
 pandas==2.3.1
     # via scraper
+gunicorn==23.0.0
+    # via backend
+numpy==2.3.1
+    # via pandas
+packaging==25.0
+    # via gunicorn
+python-dateutil==2.9.0.post0
+    # via pandas
+six==1.17.0
+    # via python-dateutil
+pytz==2025.2
+    # via pandas
