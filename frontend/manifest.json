@@ -9,8 +9,7 @@
     "permissions": [
         "activeTab",
         "storage",
-        "tabs",
-        "scripting"
+        "tabs"
     ],
     "content_scripts": [
         {
@@ -18,15 +17,13 @@
                 "https://shopee.com.my/*"
             ],
             "js": [
-                "content.js",
-                "utils.js"
+                "content.js"
             ]
         }
     ],
     "web_accessible_resources": [
         {
             "resources": [
-                "assets/spinner.gif",
                 "styles/injected.css"
             ],
             "matches": [
