@@ -28,8 +28,12 @@ EXPOSE 8000
 # Collect static files (WhiteNoise-compatible)
 RUN python manage.py collectstatic --noinput
 
-# Init superuser
-RUN python manage.py init_superuser
+# Make it executable
+RUN chmod +x docker-entry.sh
+
+# Set as entrypoint
+ENTRYPOINT ["./docker-entry.sh"]
+
 
 # Default command (will be added into render)
 CMD ["gunicorn", "--chdir", ".", "Frauditor.wsgi:application", "--bind", "0.0.0.0:8000"]
