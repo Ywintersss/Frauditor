@@ -1,15 +1,116 @@
+/* Modern UI styles for Frauditor */
 .injected-class {
     position: absolute;
-    top: 0;
-    right: 0;
-    padding: 5px 10px;
+    right: 16px;
+    top: 16px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
-.injected-class.nfraud {
-    align-items: start;
-    background-color: green;
+.injected-class:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.injected-class.yfraud {
-    background-color: red;
+/* Real review badge */
+.nfraud {
+    background: linear-gradient(135deg, #00b09b, #96c93d);
+    color: white;
+    border: 1px solid #00b09b;
+}
+
+.nfraud::before {
+    content: "✓";
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+/* Fake review badge */
+.yfraud {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    color: white;
+    border: 1px solid #ff416c;
+}
+
+.yfraud::before {
+    content: "⚠️";
+    margin-right: 4px;
+}
+
+/* Loading state */
+.injected-class.loading {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+}
+
+/* Confidence level indicator */
+.confidence-bar {
+    height: 4px;
+    width: 60px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    margin-left: 8px;
+    overflow: hidden;
+}
+
+.confidence-bar-fill {
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    transition: width 0.3s ease;
+}
+
+/* Tooltip */
+.injected-class .tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 12px;
+    background: #2d3436;
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.injected-class:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-8px);
+}
+
+/* Animation for loading spinner */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .injected-class {
+        font-size: 12px;
+        padding: 6px 12px;
+        right: 8px;
+        top: 8px;
+    }
+    
+    .confidence-bar {
+        width: 40px;
+    }
 }

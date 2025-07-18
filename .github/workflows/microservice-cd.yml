@@ -1,0 +1,42 @@
+name: Deploy Microservice
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'classification_service/**'
+      - '.github/workflows/microservice-cd.yml'
+
+
+jobs:
+  docker-build-and-push-microservice:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./dockerfile.microservice
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/frauditor-microservice:latest
+    
+  trigger-render-deploy:
+    needs: docker-build-and-push-microservice
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Render Deploy Hook
+        run: curl -X POST ${{ secrets.RENDER_MICROSERVICE_DEPLOY_HOOK }}
