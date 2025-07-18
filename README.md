@@ -25,7 +25,7 @@ Frauditor is a cutting-edge Chrome extension that uses advanced AI and Natural L
 
 1. Download the extension:
    ```bash
-   git clone [https://github.com/your-username/frauditor.git](https://github.com/Ywintersss/Frauditor.git)
+   git clone [https://github.com/Ywintersss/Frauditor.git]
    ```
 
 2. Install the Chrome extension:
