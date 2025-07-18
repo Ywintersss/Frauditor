@@ -1,7 +1,7 @@
 from fakereviewdetector import FakeReviewDetector
 import pandas as pd
 import numpy as np
-import pickle
+import cloudpickle as pickle
 import re
 import warnings
 import time
