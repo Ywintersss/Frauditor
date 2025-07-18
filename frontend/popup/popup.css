@@ -620,3 +620,37 @@ body.dark .wordcloud span:hover {
         padding: 2px 6px;
     }
 }
+
+.team-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    margin-right: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    background: #fff;
+    object-fit: contain;
+}
+
+#gifExportBtn {
+    background: linear-gradient(135deg, #667eea 0%, #38ef7d 100%);
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+#gifExportBtn:hover {
+    background: linear-gradient(135deg, #38ef7d 0%, #667eea 100%);
+    color: #fff;
+}
+
+/* Focus states for accessibility */
+button:focus, .action-btn:focus, .theme-toggle:focus {
+    outline: 3px solid #ffd700;
+    outline-offset: 2px;
+    z-index: 2;
+}
+
+/* Hide audio element visually */
+audio[style] {
+    display: none !important;
+}

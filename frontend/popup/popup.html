@@ -11,12 +11,13 @@
         <!-- Header -->
         <header class="popup-header">
             <div class="logo">
-                <span class="logo-icon">🇲🇾</span>
+                <img src="logo.jpg" alt="Team Fighting Logo" class="team-logo" width="32" height="32" />
+                <span class="logo-icon" aria-label="Malaysian flag">🇲🇾</span>
                 <h1>Frauditor</h1>
-                <span class="hackathon-badge">Team Fighting- FutureHack 2025</span>
+                <span class="hackathon-badge">Team Fighting</span>
             </div>
             <div class="version">v1.0</div>
-            <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">🌙</button>
+            <button id="themeToggle" class="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark mode" tabindex="0">🌙</button>
         </header>
 
         <!-- Status -->
@@ -91,17 +92,20 @@
 
         <!-- Actions -->
         <section class="actions-section">
-            <button id="clearCacheBtn" class="action-btn secondary">
+            <button id="clearCacheBtn" class="action-btn secondary" aria-label="Clear cache" tabindex="0">
                 🗑️ Clear Cache
             </button>
-            <button id="refreshStatsBtn" class="action-btn secondary">
+            <button id="refreshStatsBtn" class="action-btn secondary" aria-label="Refresh stats" tabindex="0">
                 🔄 Refresh Stats
             </button>
-            <button id="shareResultBtn" class="action-btn">
+            <button id="shareResultBtn" class="action-btn" aria-label="Share result" tabindex="0">
                 📤 Share Result
             </button>
-            <button id="judgeModeBtn" class="action-btn">
+            <button id="judgeModeBtn" class="action-btn" aria-label="Toggle Judge Mode" tabindex="0">
                 👨‍⚖️ Judge Mode
+            </button>
+            <button id="gifExportBtn" class="action-btn" aria-label="Export GIF of dashboard" tabindex="0">
+                🎬 Export GIF
             </button>
         </section>
 
@@ -120,5 +124,6 @@
         </footer>
     </div>
     <script src="popup.js"></script>
+    <audio id="confettiSound" src="confetti.mp3" preload="auto" style="display:none"></audio>
 </body>
 </html>

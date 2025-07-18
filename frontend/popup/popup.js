@@ -537,10 +537,58 @@ judgeBtn.addEventListener('click', () => {
     judgeBtn.textContent = judgeMode ? '🎉 Judge Mode ON' : '👨‍⚖️ Judge Mode';
 });
 
-// Confetti animation
+// === GIF Export ===
+let gifExporting = false;
+document.getElementById('gifExportBtn').addEventListener('click', async () => {
+    if (gifExporting) return;
+    gifExporting = true;
+    const btn = document.getElementById('gifExportBtn');
+    btn.textContent = '⏳ Exporting...';
+    try {
+        // Dynamically load html2canvas and gif.js if not present
+        if (!window.html2canvas) {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+            document.body.appendChild(script);
+            await new Promise(res => script.onload = res);
+        }
+        if (!window.GIF) {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/gif.js.optimized/dist/gif.worker.js';
+            document.body.appendChild(script);
+            await new Promise(res => script.onload = res);
+        }
+        // Record 1.5s of popup as GIF
+        const container = document.querySelector('.popup-container');
+        const gif = new window.GIF({ workers: 2, quality: 10, width: container.offsetWidth, height: container.offsetHeight });
+        for (let i = 0; i < 15; i++) {
+            const canvas = await window.html2canvas(container);
+            gif.addFrame(canvas, { delay: 100 });
+            await new Promise(res => setTimeout(res, 100));
+        }
+        gif.on('finished', function(blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'frauditor-demo.gif';
+            a.click();
+            btn.textContent = '🎬 Export GIF';
+            gifExporting = false;
+        });
+        gif.render();
+    } catch (e) {
+        btn.textContent = '❌ Failed';
+        setTimeout(() => btn.textContent = '🎬 Export GIF', 2000);
+        gifExporting = false;
+    }
+});
+
+// === Sound Effect on Confetti ===
 function launchConfetti() {
     const container = document.getElementById('confettiContainer');
     if (!container) return;
+    const audio = document.getElementById('confettiSound');
+    if (audio) { audio.currentTime = 0; audio.play(); }
     for (let i = 0; i < 40; i++) {
         const conf = document.createElement('div');
         conf.className = 'confetti-piece';
@@ -556,6 +604,22 @@ function launchConfetti() {
         }, 10);
         setTimeout(() => container.removeChild(conf), 1400);
     }
+}
+
+// === Accessibility: Keyboard navigation ===
+const allBtns = document.querySelectorAll('button, [tabindex="0"]');
+allBtns.forEach(btn => {
+    btn.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            btn.click();
+        }
+    });
+});
+// Add ARIA live region for status updates
+const statusSubtitle = document.getElementById('statusSubtitle');
+if (statusSubtitle) {
+    statusSubtitle.setAttribute('aria-live', 'polite');
 }
 
 // Update all visuals after each analysis
