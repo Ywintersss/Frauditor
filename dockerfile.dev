@@ -24,7 +24,24 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy Django project files
 # Commented for docker-compose
-# COPY backend/. .
+COPY backend/. /app/
 
-# Default command (will be overriden with docker-compose)
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+EXPOSE 8000
+
+COPY backend/docker-entry.sh /app/docker-entry.sh
+RUN chmod +x /app/docker-entry.sh
+ENTRYPOINT ["/app/docker-entry.sh"]
+
+
+
+# # Apply migrations
+# RUN python manage.py migrate
+
+# # Collect static files (WhiteNoise-compatible)
+# RUN python manage.py collectstatic --noinput
+
+# # Init superuser
+# RUN python manage.py init_superuser
+
+# # Default command (will be overriden with docker-compose)
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

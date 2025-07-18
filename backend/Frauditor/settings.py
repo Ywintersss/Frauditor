@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "user",
+    "scraper",
 ]
 
 MIDDLEWARE = [
@@ -87,7 +88,7 @@ DATABASES = {
 CSRF_TRUSTED_ORIGINS = (
     string.split(",") if (string := os.getenv("CSRF_TRUSTED_ORIGINS")) else []
 )
-SESSION_COOKIE_AGE = 60 * 60 # 8 hour
+SESSION_COOKIE_AGE = 60 * 60  # 8 hour
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -139,6 +140,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "user.User"
 
-CORS_ALLOWED_ORIGINS = (
-    string.split(",") if (string := os.getenv("CORS_ALLOWED_ORIGINS")) else []
-)
+# CORS_ALLOWED_ORIGINS = (
+#     string.split(",") if (string := os.getenv("CORS_ALLOWED_ORIGINS")) else []
+# )
+
+CORS_ALLOW_ALL_ORIGINS = True
