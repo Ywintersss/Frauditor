@@ -11,7 +11,7 @@ router = Router()
 @router.post("/submit-reviews")
 async def submit_reviews(request, payload: BulkReviewsSchema):
     response = requests.post(
-        "http://172.18.0.4:5000/_api/submit-reviews",
+        "https://frauditor-microservice.onrender.com/_api/submit-reviews",
         request.body,
         headers={"Content-Type": "application/json"},
     )

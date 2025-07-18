@@ -56,10 +56,10 @@ function injectIntoTarget(target, message, uniqueIdentifier, hasExistingDiv = fa
         if (boxToModify) {
             const [prediction, confidenceStr] = message.split(",");
             const confidence = parseFloat(confidenceStr.match(/[\d.]+/)[0]);
-            
+
             boxToModify.innerHTML = "";
             boxToModify.appendChild(createBadgeContent(prediction, confidence));
-            
+
             if (prediction.trim() === "REAL") {
                 boxToModify.className = "injected-class nfraud";
             } else {
@@ -107,12 +107,14 @@ async function processComments() {
 
         if (sameComments) return;
 
+        detectCommonClass()
+
         try {
             let data = await getReviews();
             console.log("Reviews fetched:", data);
-            const res = await chrome.runtime.sendMessage({ 
-                action: "initFraudDetection", 
-                data: data 
+            const res = await chrome.runtime.sendMessage({
+                action: "initFraudDetection",
+                data: data
             });
         } catch (error) {
             console.error("Error processing comments:", error);
@@ -120,7 +122,7 @@ async function processComments() {
             [...target.childNodes].forEach((node, i) => {
                 const injectionTarget = node.childNodes[1];
                 if (!injectionTarget) return;
-                
+
                 const errorBox = document.getElementById(`b${i + 1}`);
                 if (errorBox) {
                     errorBox.className = "injected-class error";
