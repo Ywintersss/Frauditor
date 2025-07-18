@@ -29,7 +29,7 @@ EXPOSE 8000
 RUN python manage.py collectstatic --noinput
 
 # Init superuser
-RUN python manage.py init_superuser
+# RUN python manage.py init_superuser
 
 # Default command (will be added into render)
 CMD ["gunicorn", "--chdir", ".", "Frauditor.wsgi:application", "--bind", "0.0.0.0:8000"]
