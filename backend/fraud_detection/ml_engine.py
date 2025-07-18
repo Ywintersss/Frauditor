@@ -247,7 +247,7 @@ class FrauditorMLEngine:
     
     def predict(self, text: str) -> Dict[str, Any]:
         """
-        ⚡ Ultra-fast prediction optimized for real-time use
+        Ultra-fast prediction optimized for real-time use
         Target: <200ms response time
         """
         start_time = time.time()
@@ -480,7 +480,7 @@ class FrauditorMLEngine:
         }
 
 
-# 🚀 GLOBAL INSTANCE FOR DJANGO INTEGRATION
+#  GLOBAL INSTANCE FOR DJANGO INTEGRATION
 ml_engine = FrauditorMLEngine()
 
 
