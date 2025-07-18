@@ -29,10 +29,10 @@ EXPOSE 8000
 RUN python manage.py collectstatic --noinput
 
 # Make it executable
-RUN chmod +x docker-entry.sh
+# RUN chmod +x docker-entry.sh
 
-# Set as entrypoint
-ENTRYPOINT ["./docker-entry.sh"]
+# # Set as entrypoint
+# ENTRYPOINT ["./docker-entry.sh"]
 
 
 # Default command (will be added into render)
