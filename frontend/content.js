@@ -1,15 +1,173 @@
 const CONTENT_SELECTORS = {
     productCommentList: ".shopee-product-comment-list",
-    navigationBar: ".shopee-page-controller.product-ratings__page-controller"
 }
 
+// Global variables to track state
+let currentObserver = null;
+let currentIntersectionObserver = null;
+let currentRatingsObserver = null;
+let currentUrl = window.location.href;
+let isProcessing = false;
+
+// Main observer that continuously watches for the comment list
 const observer = new MutationObserver((mutations, obs) => {
     const target = document.querySelector(CONTENT_SELECTORS.productCommentList);
-    if (target) {
-        obs.disconnect();
-        observeElement(target);
+    if (target && !isProcessing) {
+        setupObservers(target);
     }
 });
+
+// Function to clean up existing observers
+function cleanupObservers() {
+    if (currentIntersectionObserver) {
+        currentIntersectionObserver.disconnect();
+        currentIntersectionObserver = null;
+    }
+    if (currentRatingsObserver) {
+        currentRatingsObserver.disconnect();
+        currentRatingsObserver = null;
+    }
+}
+
+function setupObservers(target) {
+    cleanupObservers();
+
+    // Setup intersection observer
+    currentIntersectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !isProcessing) {
+                processComments();
+            }
+        });
+    });
+    currentIntersectionObserver.observe(target);
+
+    // Setup ratings observer for pagination
+    const ratingsTarget = document.querySelector('.product-ratings__list');
+    if (ratingsTarget) {
+        currentRatingsObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' &&
+                    mutation.attributeName === 'style' &&
+                    mutation.target.classList.contains('product-ratings__list')) {
+
+                    const currentOpacity = mutation.target.style.opacity;
+
+                    if (currentOpacity !== '1' && !isProcessing) {
+
+                        const completionObserver = new MutationObserver((completionMutations) => {
+                            completionMutations.forEach((completionMutation) => {
+                                if (completionMutation.type === 'attributes' &&
+                                    completionMutation.attributeName === 'style' &&
+                                    completionMutation.target.style.opacity === '1') {
+
+                                    setTimeout(() => {
+                                        processComments();
+                                    }, 200);
+
+                                    completionObserver.disconnect();
+                                }
+                            });
+                        });
+
+                        completionObserver.observe(mutation.target, {
+                            attributes: true,
+                            attributeFilter: ['style']
+                        });
+                    }
+                }
+            });
+        });
+
+        currentRatingsObserver.observe(ratingsTarget, {
+            attributes: true,
+            attributeFilter: ['style']
+        });
+    }
+}
+
+function detectUrlChange() {
+    const newUrl = window.location.href;
+    if (newUrl !== currentUrl) {
+        currentUrl = newUrl;
+
+        isProcessing = false;
+
+        cleanupObservers();
+
+        removeOldInjectedElements();
+
+        setTimeout(() => {
+            const target = document.querySelector(CONTENT_SELECTORS.productCommentList);
+            if (target) {
+                setupObservers(target);
+            }
+        }, 500);
+    }
+}
+
+function removeOldInjectedElements() {
+    const oldElements = document.querySelectorAll('.injected-class');
+    oldElements.forEach(el => el.remove());
+}
+
+async function processComments() {
+    if (isProcessing) {
+        return;
+    }
+
+    isProcessing = true;
+    console.log("Processing comments");
+
+    const target = document.querySelector(CONTENT_SELECTORS.productCommentList);
+    let sameComments = false;
+
+    if (target) {
+        [...target.childNodes].forEach((node, i) => {
+            const injectionTarget = node.childNodes[1];
+            if (!injectionTarget) return;
+
+            if (injectionTarget.lastChild && injectionTarget.lastChild.classList.contains("injected-class")) {
+                sameComments = true;
+            }
+
+            injectIntoTarget(injectionTarget, "loading...", `b${i + 1}`);
+        });
+
+        if (sameComments) {
+            isProcessing = false;
+            return;
+        }
+
+        detectCommonClass()
+
+        try {
+            let data = await getReviews();
+            const res = await chrome.runtime.sendMessage({
+                action: "initFraudDetection",
+                data: data
+            });
+        } catch (error) {
+            console.error("Error processing comments:", error);
+            // Show error state in UI
+            [...target.childNodes].forEach((node, i) => {
+                const injectionTarget = node.childNodes[1];
+                if (!injectionTarget) return;
+
+                const errorBox = document.getElementById(`b${i + 1}`);
+                if (errorBox) {
+                    errorBox.className = "injected-class error";
+                    errorBox.innerHTML = "";
+                    errorBox.appendChild(createBadgeContent("Analysis failed"));
+                }
+            });
+        } finally {
+            isProcessing = false;
+        }
+    } else {
+        isProcessing = false;
+    }
+}
 
 function injectCSS() {
     const cssUrl = chrome.runtime.getURL("styles/injected.css");
@@ -22,9 +180,6 @@ function injectCSS() {
 
 function createBadgeContent(message, confidence = null, details = null, status = 'loading') {
     const badge = document.createElement("div");
-    // const statusIcon = document.createElement("div");
-    // statusIcon.className = "status-icon";
-    // badge.appendChild(statusIcon);
 
     // Text and confidence bar container
     const textContainer = document.createElement("div");
@@ -122,152 +277,69 @@ function injectIntoTarget(target, message, uniqueIdentifier, hasExistingDiv = fa
     const loadingText = document.createElement("span");
     loadingText.textContent = "Analyzing review...";
 
-    // const loadingSubtext = document.createElement("span");
-    // loadingSubtext.style.fontSize = "10px";
-    // loadingSubtext.style.opacity = "0.8";
-    // loadingSubtext.textContent = "Checking authenticity patterns";
-
     loadingContainer.appendChild(loadingText);
-    // loadingContainer.appendChild(loadingSubtext);
-
-    // injectBox.appendChild(spinner);
     injectBox.appendChild(loadingContainer);
     target.appendChild(injectBox);
 }
 
-async function processComments() {
-    console.log("Processing comments");
-    const target = document.querySelector(CONTENT_SELECTORS.productCommentList);
-    let sameComments = false;
-
-    if (target) {
-        [...target.childNodes].forEach((node, i) => {
-            const injectionTarget = node.childNodes[1];
-            if (!injectionTarget) return;
-
-            if (injectionTarget.lastChild.classList.contains("injected-class")) {
-                sameComments = true;
-            }
-
-            injectIntoTarget(injectionTarget, "loading...", `b${i + 1}`);
-        });
-
-        if (sameComments) return;
-
-        detectCommonClass()
-
-        try {
-            let data = await getReviews();
-            console.log("Reviews fetched:", data);
-            const res = await chrome.runtime.sendMessage({
-                action: "initFraudDetection",
-                data: data
-            });
-        } catch (error) {
-            console.error("Error processing comments:", error);
-            // Show error state in UI
-            [...target.childNodes].forEach((node, i) => {
-                const injectionTarget = node.childNodes[1];
-                if (!injectionTarget) return;
-
-                const errorBox = document.getElementById(`b${i + 1}`);
-                if (errorBox) {
-                    errorBox.className = "injected-class error";
-                    errorBox.innerHTML = "";
-                    errorBox.appendChild(createBadgeContent("Analysis failed"));
-                }
-            });
-        }
-    }
-}
-
-function observeElement(el) {
-    const io = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                console.log("Review section is in view");
-                processComments();
-            }
-        });
-    });
-    io.observe(el);
-
-    // Mutation Observer for pagination changes by tracking opacity changes
-    const ratingsObserver = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'attributes' &&
-                mutation.attributeName === 'style' &&
-                mutation.target.classList.contains('product-ratings__list')) {
-
-                const currentOpacity = mutation.target.style.opacity;
-                console.log("Opacity changed to:", currentOpacity);
-
-                // When opacity changes from 1 to another value, pagination is happening
-                if (currentOpacity !== '1') {
-                    console.log("Pagination detected - waiting for completion...");
-
-                    // Wait for opacity to return to 1 (pagination complete)
-                    const completionObserver = new MutationObserver((completionMutations) => {
-                        completionMutations.forEach((completionMutation) => {
-                            if (completionMutation.type === 'attributes' &&
-                                completionMutation.attributeName === 'style' &&
-                                completionMutation.target.style.opacity === '1') {
-
-                                console.log("Pagination completed - processing comments");
-                                setTimeout(() => {
-                                    processComments();
-                                }, 200); // Small delay to ensure content is fully loaded
-
-                                completionObserver.disconnect();
-                            }
-                        });
-                    });
-
-                    completionObserver.observe(mutation.target, {
-                        attributes: true,
-                        attributeFilter: ['style']
-                    });
-                }
-            }
-        });
-    });
-
-    // Find and observe the product-ratings__list element
-    const ratingsTarget = document.querySelector('.product-ratings__list');
-    if (ratingsTarget) {
-        ratingsObserver.observe(ratingsTarget, {
-            attributes: true,
-            attributeFilter: ['style']
-        });
-    }
-}
-
+// Message listener
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action == "validityResults") {
         const target = document.querySelector(".shopee-product-comment-list");
-        [...target.childNodes].forEach((node, i) => {
-            const injectionTarget = node.childNodes[1];
-            const receivedData = request.data.predictions;
-            const key = `review ${i + 1}`;
+        if (target) {
+            [...target.childNodes].forEach((node, i) => {
+                const injectionTarget = node.childNodes[1];
+                const receivedData = request.data.predictions;
+                const key = `review ${i + 1}`;
 
-            const confidence = Number(receivedData.predictions[key].confidence * 100);
-            const prediction = receivedData.predictions[key].prediction;
-            const message = `${prediction}, Confidence level: ${Math.round((confidence + Number.EPSILON) * 100) / 100}%`;
+                const confidence = Number(receivedData.predictions[key].confidence * 100);
+                const prediction = receivedData.predictions[key].prediction;
+                const message = `${prediction}, Confidence level: ${Math.round((confidence + Number.EPSILON) * 100) / 100}%`;
 
-            injectIntoTarget(
-                injectionTarget,
-                message,
-                `b${i + 1}`,
-                true,
-                receivedData.predictions[key]
-            );
-        });
+                injectIntoTarget(
+                    injectionTarget,
+                    message,
+                    `b${i + 1}`,
+                    true,
+                    receivedData.predictions[key]
+                );
+            });
+        }
+        // Reset processing state when results are received
+        isProcessing = false;
     }
 });
 
-observer.observe(document.body, {
-    childList: true,
-    subtree: true
-});
+// Initialize everything
+function initialize() {
+    console.log("Initializing plugin...");
 
-injectCSS();
+    // Start observing for comment lists
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    setInterval(detectUrlChange, 1000); // Check every second
+
+    window.addEventListener('popstate', () => {
+        setTimeout(detectUrlChange, 100);
+    });
+
+    const originalPushState = history.pushState;
+    const originalReplaceState = history.replaceState;
+
+    history.pushState = function () {
+        originalPushState.apply(history, arguments);
+        setTimeout(detectUrlChange, 100);
+    };
+
+    history.replaceState = function () {
+        originalReplaceState.apply(history, arguments);
+        setTimeout(detectUrlChange, 100);
+    };
+
+    injectCSS();
+}
+
+initialize();
