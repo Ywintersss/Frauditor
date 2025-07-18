@@ -112,7 +112,7 @@ class FrauditorMLEngine:
                 logger.error(f" Model file not found: {self.model_path}")
                 return False
             
-            logger.info(f"🔄 Loading model from {self.model_path}")
+            logger.info(f" Loading model from {self.model_path}")
             
             with open(self.model_path, 'rb') as f:
                 model_data = pickle.load(f)
