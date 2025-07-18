@@ -25,7 +25,7 @@ Frauditor is a cutting-edge Chrome extension that uses advanced AI and Natural L
 
 1. Download the extension:
    ```bash
-   git clone https://github.com/your-username/frauditor.git
+   git clone [https://github.com/your-username/frauditor.git](https://github.com/Ywintersss/Frauditor.git)
    ```
 
 2. Install the Chrome extension:
@@ -51,7 +51,7 @@ Frauditor uses a sophisticated ML pipeline specifically trained on Malaysian e-c
 ## 🛠️ Technical Stack
 
 - **Frontend**: React, TypeScript, TailwindCSS
-- **Backend**: Django, PostgreSQL
+- **Backend**: Django
 - **ML/AI**: scikit-learn, NLTK, TensorFlow
 - **API**: Django Ninja (Fast API-style)
 - **Infrastructure**: Docker, Nginx
@@ -80,7 +80,7 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) for deta
 
 ## 🏆 Recognition
 
-- Built for FutureHack Hackathon 2024
+- Built for FutureHack Hackathon 2025
 - Focused on solving real e-commerce challenges in Malaysia
 - Developed by Team Fighting
 
@@ -91,9 +91,3 @@ For support, email frauditor@gmail.com or open an issue.
 ---
 
 <p align="center">Built with ❤️ in Malaysia for Malaysian E-commerce</p>
-
-## Adding the plugin
-1. Go to `chrome://extentions`
-2. Turn on developer mode.
-3. Click the "Load Unpacked" button.
-4. Select the **frontend** folder.
