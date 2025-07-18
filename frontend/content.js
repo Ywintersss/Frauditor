@@ -22,31 +22,9 @@ function injectCSS() {
 
 function createBadgeContent(message, confidence = null, details = null, status = 'loading') {
     const badge = document.createElement("div");
-    badge.style.display = "flex";
-    badge.style.alignItems = "center";
-    badge.style.justifyContent = "center";
-    badge.style.width = "100%";
-    badge.style.gap = "6px";
-
-    // Status icon
-    let icon;
-    if (status === 'loading') {
-        icon = document.createElement('span');
-        icon.className = 'status-icon loading-spinner';
-    } else if (status === 'real') {
-        icon = document.createElement('span');
-        icon.className = 'status-icon';
-        icon.textContent = '✓';
-    } else if (status === 'fake') {
-        icon = document.createElement('span');
-        icon.className = 'status-icon';
-        icon.textContent = '⚠️';
-    } else {
-        icon = document.createElement('span');
-        icon.className = 'status-icon';
-        icon.textContent = '?';
-    }
-    badge.appendChild(icon);
+    // const statusIcon = document.createElement("div");
+    // statusIcon.className = "status-icon";
+    // badge.appendChild(statusIcon);
 
     // Text and confidence bar container
     const textContainer = document.createElement("div");
@@ -57,6 +35,7 @@ function createBadgeContent(message, confidence = null, details = null, status =
     textContainer.style.gap = "2px";
 
     const text = document.createElement("span");
+    text.classList = "text-formatting"
     text.textContent = message;
     text.style.fontWeight = "600";
     text.style.fontSize = "13px";
@@ -71,6 +50,23 @@ function createBadgeContent(message, confidence = null, details = null, status =
         fill.style.width = `${confidence}%`;
         confidenceBar.appendChild(fill);
         textContainer.appendChild(confidenceBar);
+
+        const tooltip = document.createElement("div");
+        tooltip.className = "tooltip";
+
+        // Enhanced tooltip content
+        let tooltipContent = `Confidence: ${confidence}%<br>`;
+        if (details && details.analysis) {
+            tooltipContent += `
+                <br>Analysis Details:<br>
+                - Sentiment Score: ${(details.analysis.sentiment_score * 100).toFixed(1)}%<br>
+                - Quality Score: ${details.analysis.quality_score}/100<br>
+                - Malaysian Terms: ${details.analysis.malaysian_terms || 0}<br>
+                - Processing Time: ${(details.prediction_time * 1000).toFixed(0)}ms
+            `;
+        }
+        tooltip.innerHTML = tooltipContent;
+        badge.appendChild(tooltip);
     }
 
     badge.appendChild(textContainer);
@@ -109,8 +105,33 @@ function injectIntoTarget(target, message, uniqueIdentifier, hasExistingDiv = fa
     const injectBox = document.createElement("div");
     injectBox.id = uniqueIdentifier;
     injectBox.className = "injected-class loading";
-    injectBox.innerHTML = "";
-    injectBox.appendChild(createBadgeContent("Analyzing...", null, null, 'loading'));
+
+    const spinner = document.createElement("img");
+    spinner.src = chrome.runtime.getURL("assets/spinner.gif");
+    spinner.alt = "Analyzing...";
+    spinner.className = "loading-spinner";
+    spinner.style.width = "20px";
+    spinner.style.height = "20px";
+
+    const loadingContainer = document.createElement("div");
+    loadingContainer.style.display = "flex";
+    loadingContainer.style.flexDirection = "column";
+    loadingContainer.style.gap = "4px";
+    loadingContainer.style.padding = "2px"
+
+    const loadingText = document.createElement("span");
+    loadingText.textContent = "Analyzing review...";
+
+    // const loadingSubtext = document.createElement("span");
+    // loadingSubtext.style.fontSize = "10px";
+    // loadingSubtext.style.opacity = "0.8";
+    // loadingSubtext.textContent = "Checking authenticity patterns";
+
+    loadingContainer.appendChild(loadingText);
+    // loadingContainer.appendChild(loadingSubtext);
+
+    // injectBox.appendChild(spinner);
+    injectBox.appendChild(loadingContainer);
     target.appendChild(injectBox);
 }
 
@@ -234,9 +255,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             const message = `${prediction}, Confidence level: ${Math.round((confidence + Number.EPSILON) * 100) / 100}%`;
 
             injectIntoTarget(
-                injectionTarget, 
-                message, 
-                `b${i + 1}`, 
+                injectionTarget,
+                message,
+                `b${i + 1}`,
                 true,
                 receivedData.predictions[key]
             );
