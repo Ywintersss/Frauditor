@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "user",
-    "fraud_detection",
+    # "fraud_detection",
     "scraper",
 ]
 
