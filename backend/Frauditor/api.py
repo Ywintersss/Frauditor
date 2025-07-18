@@ -8,7 +8,7 @@ api = NinjaAPI(
     title="Frauditor API",
     description="Real-time fake review detection system for Malaysian e-commerce",
     version="1.0.0",
-    docs_url="/api/docs/"  # Enable automatic API documentation
+    docs_url="/api/docs/",  # Enable automatic API documentation
 )
 
 api.add_router("users", user_router)
