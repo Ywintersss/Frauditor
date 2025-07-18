@@ -480,19 +480,3 @@ def _mock_extension_response(text: str) -> Dict[str, Any]:
             "time": 0.05
         }
     }
-
-
-# ERROR HANDLERS
-
-@router.exception_handler(Exception)
-def general_exception_handler(request, exc):
-    """Global exception handler"""
-    logger.error(f"Unhandled exception: {exc}")
-    return Response(
-        {
-            "success": False,
-            "error": "An unexpected error occurred",
-            "details": str(exc) if settings.DEBUG else None
-        },
-        status=500
-    )
