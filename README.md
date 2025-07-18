@@ -13,7 +13,6 @@ Frauditor is a cutting-edge Chrome extension that uses advanced AI and Natural L
 
 -   **Real-time Detection**: Instant analysis as you browse reviews
 -   **Malaysian Context Aware**: Understands Manglish, local slangs, and mixed-language patterns
--   **Smart Highlighting**: Just highlight any review text to analyze its authenticity
 -   **Comprehensive Analysis**: Detects multiple types of fake reviews:
     -   🤖 Bot-generated content
     -   💰 Paid/incentivized reviews
@@ -93,7 +92,7 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) for deta
 
 For support:
 
--   Email: frauditor@gmail.com
+-   Email: cindypua115@gmail.com
 -   API Status: [https://frauditor.onrender.com/](https://frauditor.onrender.com/)
 -   Open an issue on GitHub
 
