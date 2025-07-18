@@ -222,6 +222,29 @@
     background: rgba(255, 255, 255, 0.2);
 }
 
+/* --- Status Icon for Injected Badge --- */
+.injected-class .status-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    margin-right: 6px;
+    font-size: 15px;
+    background: rgba(0,0,0,0.04);
+    color: #888;
+    flex-shrink: 0;
+}
+.nfraud .status-icon {
+    background: #e6f9e7;
+    color: #2ecc40;
+}
+.yfraud .status-icon {
+    background: #ffe6ed;
+    color: #ff416c;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     .injected-class {
@@ -242,7 +265,7 @@
     .tooltip {
         font-size: 11px;
         padding: 8px 12px;
-    }
+}
 }
 
 /* Dark mode support */

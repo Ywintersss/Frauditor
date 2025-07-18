@@ -232,44 +232,50 @@ function setupEventListeners() {
     });
 }
 
-/**
- * Handle review analysis
- */
+// === Backend API Analysis for Popup ===
+async function analyzeReviewWithBackend(text) {
+    try {
+        const response = await fetch('https://frauditor.onrender.com/api/fraud/analyze', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text })
+        });
+        if (!response.ok) throw new Error('API error');
+        return await response.json();
+    } catch (e) {
+        return { success: false, error: e.message };
+    }
+}
+
+// Replace handleAnalyze to use backend API
 async function handleAnalyze() {
     if (isAnalyzing) return;
-    
     const text = elements.reviewInput.value.trim();
     if (!text) {
         showError('Please enter a review to analyze');
         return;
     }
-    
     if (text.length < 3) {
         showError('Review too short (minimum 3 characters)');
         return;
     }
-    
     try {
         isAnalyzing = true;
         updateAnalyzeButton(true);
         hideResult();
-        
-        // Send analysis request
-        const result = await chrome.runtime.sendMessage({
-            action: 'analyzeReview',
-            text: text,
-            options: { source: 'popup' }
-        });
-        
+
+        // Call backend API directly
+        const result = await analyzeReviewWithBackend(text);
+
         if (result && result.success !== false) {
             showResult(result);
             updateStats(result);
         } else {
             showError(result?.error || 'Analysis failed');
         }
-        
     } catch (error) {
-        console.error('❌ Analysis error:', error);
         showError('Analysis failed: ' + error.message);
     } finally {
         isAnalyzing = false;

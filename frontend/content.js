@@ -20,22 +20,50 @@ function injectCSS() {
     document.head.appendChild(link);
 }
 
-function createBadgeContent(message, confidence = null, details = null) {
+function createBadgeContent(message, confidence = null, details = null, status = 'loading') {
     const badge = document.createElement("div");
-    const statusIcon = document.createElement("div");
-    statusIcon.className = "status-icon";
-    badge.appendChild(statusIcon);
+    badge.style.display = "flex";
+    badge.style.alignItems = "center";
+    badge.style.justifyContent = "center";
+    badge.style.width = "100%";
+    badge.style.gap = "6px";
 
+    // Status icon
+    let icon;
+    if (status === 'loading') {
+        icon = document.createElement('span');
+        icon.className = 'status-icon loading-spinner';
+    } else if (status === 'real') {
+        icon = document.createElement('span');
+        icon.className = 'status-icon';
+        icon.textContent = '✓';
+    } else if (status === 'fake') {
+        icon = document.createElement('span');
+        icon.className = 'status-icon';
+        icon.textContent = '⚠️';
+    } else {
+        icon = document.createElement('span');
+        icon.className = 'status-icon';
+        icon.textContent = '?';
+    }
+    badge.appendChild(icon);
+
+    // Text and confidence bar container
     const textContainer = document.createElement("div");
     textContainer.style.display = "flex";
     textContainer.style.flexDirection = "column";
-    textContainer.style.gap = "4px";
+    textContainer.style.alignItems = "center";
+    textContainer.style.justifyContent = "center";
+    textContainer.style.gap = "2px";
 
     const text = document.createElement("span");
     text.textContent = message;
+    text.style.fontWeight = "600";
+    text.style.fontSize = "13px";
+    text.style.textAlign = "center";
     textContainer.appendChild(text);
 
-    if (confidence !== null) {
+    if (confidence !== null && status !== 'loading') {
         const confidenceBar = document.createElement("div");
         confidenceBar.className = "confidence-bar";
         const fill = document.createElement("div");
@@ -43,34 +71,16 @@ function createBadgeContent(message, confidence = null, details = null) {
         fill.style.width = `${confidence}%`;
         confidenceBar.appendChild(fill);
         textContainer.appendChild(confidenceBar);
-
-        const tooltip = document.createElement("div");
-        tooltip.className = "tooltip";
-        
-        // Enhanced tooltip content
-        let tooltipContent = `Confidence: ${confidence}%<br>`;
-        if (details && details.analysis) {
-            tooltipContent += `
-                <br>Analysis Details:<br>
-                - Sentiment Score: ${(details.analysis.sentiment_score * 100).toFixed(1)}%<br>
-                - Quality Score: ${details.analysis.quality_score}/100<br>
-                - Malaysian Terms: ${details.analysis.malaysian_terms || 0}<br>
-                - Processing Time: ${(details.prediction_time * 1000).toFixed(0)}ms
-            `;
-        }
-        tooltip.innerHTML = tooltipContent;
-        badge.appendChild(tooltip);
     }
 
     badge.appendChild(textContainer);
     return badge;
 }
 
-function injectIntoTarget(target, message, uniqueIdentifier, hasExistingDiv = false, details = null) {
+function injectIntoTarget(target, message, uniqueIdentifier, hasExistingDiv = false, details = null, status = 'loading') {
     if (document.getElementById(uniqueIdentifier) && !hasExistingDiv) {
         return;
     }
-
     target.style.position = "relative";
 
     if (hasExistingDiv) {
@@ -78,64 +88,30 @@ function injectIntoTarget(target, message, uniqueIdentifier, hasExistingDiv = fa
         if (boxToModify) {
             const [prediction, confidenceStr] = message.split(",");
             const confidence = parseFloat(confidenceStr.match(/[\d.]+/)[0]);
-            
+            let statusType = 'real';
+            if (prediction.trim().toUpperCase() === "REAL") statusType = 'real';
+            else if (prediction.trim().toUpperCase() === "FAKE") statusType = 'fake';
+            else statusType = 'unknown';
             boxToModify.innerHTML = "";
-            boxToModify.appendChild(createBadgeContent(prediction, confidence, details));
-            
-            if (prediction.trim() === "REAL") {
+            boxToModify.appendChild(createBadgeContent(prediction, confidence, details, statusType));
+            if (statusType === 'real') {
                 boxToModify.className = "injected-class nfraud";
-            } else {
+            } else if (statusType === 'fake') {
                 boxToModify.className = "injected-class yfraud";
+            } else {
+                boxToModify.className = "injected-class";
             }
-
-            // Add animation class
             boxToModify.classList.add("fade-in");
             setTimeout(() => boxToModify.classList.remove("fade-in"), 1000);
         }
         return;
     }
-
     const injectBox = document.createElement("div");
     injectBox.id = uniqueIdentifier;
     injectBox.className = "injected-class loading";
-
-    const spinner = document.createElement("img");
-    spinner.src = chrome.runtime.getURL("assets/spinner.gif");
-    spinner.alt = "Analyzing...";
-    spinner.className = "loading-spinner";
-    spinner.style.width = "20px";
-    spinner.style.height = "20px";
-
-    const loadingContainer = document.createElement("div");
-    loadingContainer.style.display = "flex";
-    loadingContainer.style.flexDirection = "column";
-    loadingContainer.style.gap = "4px";
-
-    const loadingText = document.createElement("span");
-    loadingText.textContent = "Analyzing review...";
-    
-    const loadingSubtext = document.createElement("span");
-    loadingSubtext.style.fontSize = "11px";
-    loadingSubtext.style.opacity = "0.8";
-    loadingSubtext.textContent = "Checking authenticity patterns";
-
-    loadingContainer.appendChild(loadingText);
-    loadingContainer.appendChild(loadingSubtext);
-
-    injectBox.appendChild(spinner);
-    injectBox.appendChild(loadingContainer);
+    injectBox.innerHTML = "";
+    injectBox.appendChild(createBadgeContent("Analyzing...", null, null, 'loading'));
     target.appendChild(injectBox);
-
-    // Animate loading text
-    let dots = 0;
-    const loadingInterval = setInterval(() => {
-        if (!document.getElementById(uniqueIdentifier)) {
-            clearInterval(loadingInterval);
-            return;
-        }
-        dots = (dots + 1) % 4;
-        loadingSubtext.textContent = "Checking authenticity patterns" + ".".repeat(dots);
-    }, 500);
 }
 
 async function processComments() {
