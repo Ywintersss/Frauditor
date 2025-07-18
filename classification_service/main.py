@@ -2,11 +2,7 @@ from typing import Dict
 from schemas.schema import BulkReviewsSchema, MessageResponseSchema
 from classification_model.model import getPredictions
 from flask import Flask, request, jsonify
-
-
-class FakeReviewDetector:
-    def __init__(self) -> None:
-        pass
+from fakereviewdetector import FakeReviewDetector
 
 
 app = Flask(__name__)

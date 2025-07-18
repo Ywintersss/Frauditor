@@ -1,3 +1,4 @@
+from fakereviewdetector import FakeReviewDetector
 import pandas as pd
 import numpy as np
 import pickle
@@ -16,11 +17,6 @@ from textblob import TextBlob
 from scipy.sparse import hstack
 
 warnings.filterwarnings("ignore")
-
-
-class FakeReviewDetector:
-    def __init__(self) -> None:
-        pass
 
 
 resources = {
