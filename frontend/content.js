@@ -26,11 +26,15 @@ function injectIntoTarget(target, message, uniqueIdentifier, hasExistingDiv = fa
         return;
     }
     if (hasExistingDiv) {
+        const messageType = message.split(",")[0]
         const boxToModify = document.getElementById(uniqueIdentifier);
         if (boxToModify) {
             boxToModify.innerText = message;
-            // check result type
-            boxToModify.classList = "injected-class nfraud"
+            if (messageType == "REAL") {
+                boxToModify.classList = "injected-class nfraud"
+            } else {
+                boxToModify.classList = "injected-class yfraud"
+            }
         }
         return;
     }
@@ -76,6 +80,7 @@ async function processComments() {
         }
 
         let data = await getReviews();
+        console.log(data)
 
         const res = await chrome.runtime.sendMessage({ action: "initFraudDetection", data: data })
     }
@@ -145,13 +150,17 @@ function observeElement(el) {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action == "validityResults") {
-        console.log(request.data)
         const target = document.querySelector(".shopee-product-comment-list");
         [...target.childNodes].map((node, i) => {
             const injectionTarget = node.childNodes[1]
             const receivedData = request.data;
             const key = `review ${i + 1}`
-            injectIntoTarget(injectionTarget, receivedData[key].username, `b${i + 1}`, true);
+
+            const confidence = Number(receivedData.predictions[key].confidence * 100)
+            const prediction = receivedData.predictions[key].prediction
+            const message = `${prediction}, Confidence level: ${Math.round((confidence + Number.EPSILON) * 100) / 100}%`
+
+            injectIntoTarget(injectionTarget, message, `b${i + 1}`, true);
         })
     }
 });
