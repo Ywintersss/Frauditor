@@ -1,12 +1,10 @@
-chrome.action.onClicked.addListener((tab) => {
-    chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ['content.js']
-    });
-});
+const ENV = {
+    MODE: "prod",
+    API_URL: "https://frauditor.onrender.com"
+}
 
 async function getValidity(reviews) {
-    const response = await fetch("http://localhost:8000/api/reviews/submit-reviews", {
+    const response = await fetch(`${ENV.API_URL}/api/reviews/submit-reviews`, {
         method: "POST",
         body: JSON.stringify(reviews)
     })
