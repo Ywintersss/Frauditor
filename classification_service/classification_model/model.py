@@ -18,6 +18,11 @@ from scipy.sparse import hstack
 warnings.filterwarnings("ignore")
 
 
+class FakeReviewDetector:
+    def __init__(self) -> None:
+        pass
+
+
 resources = {
     "punkt": "tokenizers/punkt",
     "stopwords": "corpora/stopwords",
