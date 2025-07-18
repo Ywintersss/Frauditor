@@ -65,7 +65,7 @@ class FrauditorInference:
         try:
             with open(self.model_path, "rb") as f:
                 # self.model_data = pickle.load(f)
-                self.model_data = FixUnpickler.load(f)
+                self.model_data = FixUnpickler(f).load()
 
             # Extract components
             self.models = self.model_data["models"]
