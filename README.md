@@ -58,7 +58,7 @@ Frauditor uses a sophisticated ML pipeline specifically trained on Malaysian e-c
     -   Endpoint: [https://frauditor.onrender.com/](https://frauditor.onrender.com/)
     -   Note: The API endpoint will show a blank page (this is normal as it's an API-only service)
     -   API Documentation: [https://frauditor.onrender.com/api/docs](https://frauditor.onrender.com/api/docs)
--   **ML/AI**: scikit-learn, NLTK, TensorFlow
+-   **ML/AI**: scikit-learn, NLTK
 -   **Infrastructure**: Docker, Nginx, Render (Cloud Hosting)
 
 ## 📊 Performance
