@@ -1,6 +1,7 @@
+from fakereviewdetector import FakeReviewDetector
 import pandas as pd
 import numpy as np
-import pickle
+import pickle as pickle
 import re
 import warnings
 import time
@@ -16,6 +17,8 @@ from textblob import TextBlob
 from scipy.sparse import hstack
 
 warnings.filterwarnings("ignore")
+
+
 
 
 resources = {
@@ -61,7 +64,8 @@ class FrauditorInference:
         """Load the trained model and all components"""
         try:
             with open(self.model_path, "rb") as f:
-                self.model_data = pickle.load(f)
+                # self.model_data = pickle.load(f)
+                self.model_data = FixUnpickler(f).load()
 
             # Extract components
             self.models = self.model_data["models"]
@@ -508,6 +512,15 @@ class FrauditorPreprocessor:
             "textblob_subjectivity": 0,
         }
 
+class FixUnpickler(pickle.Unpickler):
+    def find_class(self, module, name):
+        if module == "__main__" and name == "FakeReviewDetector":
+            return FakeReviewDetector
+        return super().find_class(module, name)
+
+def load_model_fixed(path):
+    with open(path, "rb") as f:
+        return FixUnpickler(f).load()
 
 def getPredictions(file_path, data):
     # Initialize the inference system
