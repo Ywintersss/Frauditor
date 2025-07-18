@@ -1,5 +1,6 @@
 from ninja import Router
 import json
+
 # from classification_model.model import getPredictions
 from .schemas import MessageResponseSchema, ReviewSchema, BulkReviewsSchema
 import requests
@@ -8,22 +9,11 @@ router = Router()
 
 
 @router.post("/submit-reviews")
-def submit_reviews(request, payload: BulkReviewsSchema):
-    print(request)
+async def submit_reviews(request, payload: BulkReviewsSchema):
     response = requests.post(
-        "http://127.0.0.1:5000/_api/submit-reviews", json=payload.dict()
+        "http://172.18.0.4:5000/_api/submit-reviews",
+        request.body,
+        headers={"Content-Type": "application/json"},
     )
-    print(response)
-    data = response
-    # data = json.loads(request.body)
-    evaluation = {}
 
-    # predictions = getPredictions(
-    #     "./classification_model/frauditor_model.pkl",
-    #     data,
-    # )
-
-    # for key, prediction in predictions.items():
-    #     evaluation[key] = prediction
-
-    return {"message": "OK", "predictions": evaluation}
+    return {"message": "OK", "predictions": response.json()}

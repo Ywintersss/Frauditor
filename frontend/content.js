@@ -153,7 +153,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         const target = document.querySelector(".shopee-product-comment-list");
         [...target.childNodes].map((node, i) => {
             const injectionTarget = node.childNodes[1]
-            const receivedData = request.data;
+            const receivedData = request.data.predictions;
             const key = `review ${i + 1}`
 
             const confidence = Number(receivedData.predictions[key].confidence * 100)

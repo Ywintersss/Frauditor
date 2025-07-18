@@ -152,62 +152,66 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-] + (os.getenv("CORS_ALLOWED_ORIGINS", "").split(",") if os.getenv("CORS_ALLOWED_ORIGINS") else [])
+] + (
+    os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
+    if os.getenv("CORS_ALLOWED_ORIGINS")
+    else []
+)
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-    'x-extension-id',  # Custom header for extension
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "x-extension-id",  # Custom header for extension
 ]
 
 # Cache configuration for ML predictions (optional)
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'frauditor-cache',
-        'TIMEOUT': 300,  # 5 minutes
-        'OPTIONS': {
-            'MAX_ENTRIES': 1000,
-        }
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "frauditor-cache",
+        "TIMEOUT": 300,  # 5 minutes
+        "OPTIONS": {
+            "MAX_ENTRIES": 1000,
+        },
     }
 }
 
 # Logging configuration
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
         },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': 'frauditor.log',
+        "file": {
+            "class": "logging.FileHandler",
+            "filename": "frauditor.log",
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
     },
-    'loggers': {
-        'fraud_detection': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
-            'propagate': False,
+    "loggers": {
+        "fraud_detection": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
         },
     },
 }
 
 # ML Model settings
-ML_MODEL_PATH = os.path.join(BASE_DIR, 'fraud_detection', 'models', 'frauditor_model.pkl')
-ML_CACHE_TIMEOUT = 300  # Cache predictions for 5 minutes
+# ML_MODEL_PATH = os.path.join(BASE_DIR, 'fraud_detection', 'models', 'frauditor_model.pkl')
+# ML_CACHE_TIMEOUT = 300  # Cache predictions for 5 minutes

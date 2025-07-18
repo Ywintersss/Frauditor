@@ -12,12 +12,12 @@ class FakeReviewDetector:
 app = Flask(__name__)
 
 
-@app.route("/_api/submit-reviews/", methods=["POST"])
+@app.route("/_api/submit-reviews", methods=["POST"])
 def submit_reviews():
     data = request.json
-    results = getPredictions("./models/frauditor_model.pkl", data)
+    results = getPredictions("./classification_model/frauditor_model.pkl", data)
     return jsonify({"predictions": results})
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=5000)
