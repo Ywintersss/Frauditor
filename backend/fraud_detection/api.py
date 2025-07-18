@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 router = Router(tags=[" Fraud Detection"])
 
 
-# 📋 REQUEST/RESPONSE SCHEMAS
+# REQUEST/RESPONSE SCHEMAS
 class ReviewAnalysisRequest(BaseModel):
     text: str = Field(..., min_length=1, max_length=5000, description="Review text to analyze")
     context: Optional[Dict] = Field(default=None, description="Additional context (rating, product, etc.)")
