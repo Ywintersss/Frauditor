@@ -1,13 +1,15 @@
 name: Deploy Microservice
 
-on: 
-  pull_request:
+on:
+  push:
+    branches: [main]
     paths:
       - 'classification_service/**'
       - '.github/workflows/microservice-cd.yml'
 
+
 jobs:
-  deploy-microservice:
+  docker-build-and-push-microservice:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,3 +32,11 @@ jobs:
           file: ./dockerfile.microservice
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/frauditor-microservice:latest
+    
+  trigger-render-deploy:
+    needs: docker-build-and-push-microservice
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Render Deploy Hook
+        run: curl -X POST ${{ secrets.RENDER_MICROSERVICE_DEPLOY_HOOK }}
