@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "user",
     "fraud_detection",
+    "scraper",
 ]
 
 MIDDLEWARE = [

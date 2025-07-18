@@ -12,7 +12,7 @@ def submit_reviews(request, payload: BulkReviewsSchema):
     evaluation = {}
 
     predictions = getPredictions(
-        "./classification_model/frauditor_improved_model.pkl",
+        "./classification_model/frauditor_model.pkl",
         data,
     )
 

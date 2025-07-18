@@ -10,6 +10,11 @@ class ImprovedFakeReviewDetector:
         pass
 
 
+class FakeReviewDetector:
+    def __init__(self) -> None:
+        pass
+
+
 def main():
     """Run administrative tasks."""
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frauditor.settings")
