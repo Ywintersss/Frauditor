@@ -11,15 +11,15 @@ Frauditor is a cutting-edge Chrome extension that uses advanced AI and Natural L
 
 ## 🌟 Key Features
 
--   **Real-time Detection**: Instant analysis as you browse reviews
--   **Malaysian Context Aware**: Understands Manglish, local slangs, and mixed-language patterns
--   **Comprehensive Analysis**: Detects multiple types of fake reviews:
-    -   🤖 Bot-generated content
-    -   💰 Paid/incentivized reviews
-    -   🚫 Copy-pasted spam
-    -   ⚠️ Manipulated ratings
--   **User-Friendly Interface**: Clean, intuitive design with clear authenticity indicators
--   **Privacy First**: All processing happens locally - no review data is stored
+- **Real-time Detection**: Instant analysis as you browse reviews
+- **Malaysian Context Aware**: Understands Manglish, local slangs, and mixed-language patterns
+- **Comprehensive Analysis**: Detects multiple types of fake reviews:
+  - 🤖 Bot-generated content
+  - 💰 Paid/incentivized reviews
+  - 🚫 Copy-pasted spam
+  - ⚠️ Manipulated ratings
+- **User-Friendly Interface**: Clean, intuitive design with clear authenticity indicators
+- **Privacy First**: All processing is stateless - no review data is stored
 
 ## 🚀 Quick Start
 
@@ -52,27 +52,27 @@ Frauditor uses a sophisticated ML pipeline specifically trained on Malaysian e-c
 
 ## 🛠️ Technical Stack
 
--   **Frontend**: Chrome Extension with modern UI
--   **Backend API**: Django + Django Ninja (FastAPI-style)
-    -   Endpoint: [https://frauditor.onrender.com/](https://frauditor.onrender.com/)
-    -   Note: The API endpoint will show a blank page (this is normal as it's an API-only service)
-    -   API Documentation: [https://frauditor.onrender.com/api/docs](https://frauditor.onrender.com/api/docs)
--   **ML/AI**: scikit-learn, NLTK
--   **Infrastructure**: Docker, Nginx, Render (Cloud Hosting)
+- **Frontend**: Chrome Extension with modern UI
+- **Backend API**: Django + Django Ninja (FastAPI-style)
+  - Endpoint: [https://frauditor.onrender.com/](https://frauditor.onrender.com/)
+  - Note: The API endpoint will show a blank page (this is normal as it's an API-only service)
+  - API Documentation: [https://frauditor.onrender.com/api/docs](https://frauditor.onrender.com/api/docs)
+- **ML/AI**: scikit-learn, NLTK
+- **Infrastructure**: Docker, Nginx, Render (Cloud Hosting)
 
 ## 📊 Performance
 
--   95% accuracy on Malaysian review dataset
--   <200ms response time
--   Lightweight: <5MB memory usage
--   Processes 100+ reviews/second
+- 95% accuracy on Malaysian review dataset
+- <200ms response time
+- Lightweight: <5MB memory usage
+- Processes 100+ reviews/second
 
 ## 🔒 Privacy & Security
 
--   No user data collection
--   Local processing priority
--   Secure API communications
--   Regular security updates
+- No user data collection
+- Local processing priority
+- Secure API communications
+- Regular security updates
 
 ## 🤝 Contributing
 
@@ -84,17 +84,16 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) for deta
 
 ## 🏆 Recognition
 
--   Built for FutureHack Hackathon 2025
--   Focused on solving real e-commerce challenges in Malaysia
--   Developed by Team Fighting
+- Built for FutureHack Hackathon 2025
+- Focused on solving real e-commerce challenges in Malaysia
+- Developed by Team Fighting
 
 ## 📞 Support
 
 For support:
 
--   Email: frauditor@gmail.com
--   API Status: [https://frauditor.onrender.com/](https://frauditor.onrender.com/)
--   Open an issue on GitHub
+- API Status: [https://frauditor.onrender.com/](https://frauditor.onrender.com/)
+- Open an issue on GitHub
 
 ---
 
