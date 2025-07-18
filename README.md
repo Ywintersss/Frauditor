@@ -21,6 +21,7 @@ Frauditor is a cutting-edge Chrome extension that uses advanced AI and Natural L
 - **User-Friendly Interface**: Clean, intuitive design with clear authenticity indicators
 - **Privacy First**: All processing is stateless - no review data is stored
 
+
 ## 🚀 Quick Start
 
 1. Download the extension:
@@ -92,8 +93,10 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) for deta
 
 For support:
 
+
 - API Status: [https://frauditor.onrender.com/](https://frauditor.onrender.com/)
 - Open an issue on GitHub
+
 
 ---
 
