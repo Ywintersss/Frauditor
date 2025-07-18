@@ -3,7 +3,10 @@
     "name": "Frauditor - Fake Review Detector",
     "version": "1.0",
     "description": "Real-time fake review detection for Malaysian e-commerce platforms",
-    "action": {},
+    "action": {
+        "default_popup": "popup/popup.html",
+        "default_title": "Frauditor - Detect Fake Reviews"
+    },
     "background": {
         "service_worker": "background.js"
     },
@@ -16,6 +19,7 @@
     "content_scripts": [
         {
             "matches": [
+                "https://shopee.com.my/",
                 "https://shopee.com.my/*"
             ],
             "js": [
@@ -40,5 +44,8 @@
         "32": "images/icon16.png",
         "48": "images/icon16.png",
         "128": "images/icon16.png"
-    }
+    },
+    "host_permissions": [
+        "https://shopee.com.my/*"
+    ]
 }
