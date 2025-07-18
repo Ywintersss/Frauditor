@@ -20,11 +20,20 @@ function injectCSS() {
     document.head.appendChild(link);
 }
 
-function createBadgeContent(message, confidence = null) {
+function createBadgeContent(message, confidence = null, details = null) {
     const badge = document.createElement("div");
+    const statusIcon = document.createElement("div");
+    statusIcon.className = "status-icon";
+    badge.appendChild(statusIcon);
+
+    const textContainer = document.createElement("div");
+    textContainer.style.display = "flex";
+    textContainer.style.flexDirection = "column";
+    textContainer.style.gap = "4px";
+
     const text = document.createElement("span");
     text.textContent = message;
-    badge.appendChild(text);
+    textContainer.appendChild(text);
 
     if (confidence !== null) {
         const confidenceBar = document.createElement("div");
@@ -33,18 +42,31 @@ function createBadgeContent(message, confidence = null) {
         fill.className = "confidence-bar-fill";
         fill.style.width = `${confidence}%`;
         confidenceBar.appendChild(fill);
-        badge.appendChild(confidenceBar);
+        textContainer.appendChild(confidenceBar);
 
         const tooltip = document.createElement("div");
         tooltip.className = "tooltip";
-        tooltip.textContent = `Confidence: ${confidence}%`;
+        
+        // Enhanced tooltip content
+        let tooltipContent = `Confidence: ${confidence}%<br>`;
+        if (details && details.analysis) {
+            tooltipContent += `
+                <br>Analysis Details:<br>
+                - Sentiment Score: ${(details.analysis.sentiment_score * 100).toFixed(1)}%<br>
+                - Quality Score: ${details.analysis.quality_score}/100<br>
+                - Malaysian Terms: ${details.analysis.malaysian_terms || 0}<br>
+                - Processing Time: ${(details.prediction_time * 1000).toFixed(0)}ms
+            `;
+        }
+        tooltip.innerHTML = tooltipContent;
         badge.appendChild(tooltip);
     }
 
+    badge.appendChild(textContainer);
     return badge;
 }
 
-function injectIntoTarget(target, message, uniqueIdentifier, hasExistingDiv = false) {
+function injectIntoTarget(target, message, uniqueIdentifier, hasExistingDiv = false, details = null) {
     if (document.getElementById(uniqueIdentifier) && !hasExistingDiv) {
         return;
     }
@@ -56,15 +78,19 @@ function injectIntoTarget(target, message, uniqueIdentifier, hasExistingDiv = fa
         if (boxToModify) {
             const [prediction, confidenceStr] = message.split(",");
             const confidence = parseFloat(confidenceStr.match(/[\d.]+/)[0]);
-
+            
             boxToModify.innerHTML = "";
-            boxToModify.appendChild(createBadgeContent(prediction, confidence));
-
+            boxToModify.appendChild(createBadgeContent(prediction, confidence, details));
+            
             if (prediction.trim() === "REAL") {
                 boxToModify.className = "injected-class nfraud";
             } else {
                 boxToModify.className = "injected-class yfraud";
             }
+
+            // Add animation class
+            boxToModify.classList.add("fade-in");
+            setTimeout(() => boxToModify.classList.remove("fade-in"), 1000);
         }
         return;
     }
@@ -80,12 +106,36 @@ function injectIntoTarget(target, message, uniqueIdentifier, hasExistingDiv = fa
     spinner.style.width = "20px";
     spinner.style.height = "20px";
 
+    const loadingContainer = document.createElement("div");
+    loadingContainer.style.display = "flex";
+    loadingContainer.style.flexDirection = "column";
+    loadingContainer.style.gap = "4px";
+
     const loadingText = document.createElement("span");
     loadingText.textContent = "Analyzing review...";
+    
+    const loadingSubtext = document.createElement("span");
+    loadingSubtext.style.fontSize = "11px";
+    loadingSubtext.style.opacity = "0.8";
+    loadingSubtext.textContent = "Checking authenticity patterns";
+
+    loadingContainer.appendChild(loadingText);
+    loadingContainer.appendChild(loadingSubtext);
 
     injectBox.appendChild(spinner);
-    injectBox.appendChild(loadingText);
+    injectBox.appendChild(loadingContainer);
     target.appendChild(injectBox);
+
+    // Animate loading text
+    let dots = 0;
+    const loadingInterval = setInterval(() => {
+        if (!document.getElementById(uniqueIdentifier)) {
+            clearInterval(loadingInterval);
+            return;
+        }
+        dots = (dots + 1) % 4;
+        loadingSubtext.textContent = "Checking authenticity patterns" + ".".repeat(dots);
+    }, 500);
 }
 
 async function processComments() {
@@ -207,7 +257,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             const prediction = receivedData.predictions[key].prediction;
             const message = `${prediction}, Confidence level: ${Math.round((confidence + Number.EPSILON) * 100) / 100}%`;
 
-            injectIntoTarget(injectionTarget, message, `b${i + 1}`, true);
+            injectIntoTarget(
+                injectionTarget, 
+                message, 
+                `b${i + 1}`, 
+                true,
+                receivedData.predictions[key]
+            );
         });
     }
 });
