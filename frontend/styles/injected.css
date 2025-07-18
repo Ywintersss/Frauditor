@@ -9,68 +9,109 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* --- Frauditor Badge for Web Experience (Enhanced) --- */
 .injected-class {
     position: absolute;
-    right: 16px;
-    top: 16px;
-    padding: 10px 18px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 600;
+    right: 10px;
+    top: 10px;
+    min-width: 70px;
+    max-width: 135px;
+    padding: 3px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 10px;
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition);
+    gap: 6px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+    transition: all 0.18s cubic-bezier(0.4,0,0.2,1);
     z-index: 1000;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    cursor: pointer;
+    background: linear-gradient(90deg, #f8fafc 0%, #e9f7ef 100%);
+    border: 1.5px solid #e0e0e0;
+    user-select: none;
+    opacity: 0;
+    animation: frauditor-fadeIn 0.5s ease forwards;
 }
-
+@keyframes frauditor-fadeIn {
+    to {
+        opacity: 1;
+    }
+}
 .injected-class:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: var(--shadow-lg);
+    transform: scale(1.07) translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.16);
+    background: linear-gradient(90deg, #e0ffe8 0%, #b2f2e5 100%);
+    border-color: #b2f2e5;
 }
-
-/* Real review badge */
 .nfraud {
-    background: var(--real-gradient);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(90deg, #00b09b 0%, #96c93d 100%);
+    color: #fff;
+    border: 1.5px solid #00b09b;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.08);
 }
-
+.nfraud:hover {
+    background: linear-gradient(90deg, #00b09b 10%, #b2f2e5 100%);
+    color: #222;
+    box-shadow: 0 8px 24px rgba(0,176,155,0.13);
+}
 .nfraud::before {
     content: "✓";
     font-weight: bold;
     margin-right: 4px;
-    font-size: 16px;
-    animation: checkmark 0.5s ease-in-out;
+    font-size: 15px;
 }
-
-@keyframes checkmark {
-    0% { transform: scale(0); opacity: 0; }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-/* Fake review badge */
 .yfraud {
-    background: var(--fake-gradient);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%);
+    color: #fff;
+    border: 1.5px solid #ff416c;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.10);
 }
-
+.yfraud:hover {
+    background: linear-gradient(90deg, #ff416c 10%, #ffd6e0 100%);
+    color: #222;
+    box-shadow: 0 8px 24px rgba(255,65,108,0.13);
+}
 .yfraud::before {
     content: "⚠️";
     margin-right: 4px;
-    font-size: 16px;
-    animation: warning 0.5s ease-in-out;
+    font-size: 15px;
 }
-
-@keyframes warning {
-    0% { transform: translateY(-10px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
+.injected-class .confidence-bar {
+    height: 4px;
+    width: 40px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 2px;
+    margin-left: 5px;
+    overflow: hidden;
+}
+.confidence-bar-fill {
+    height: 100%;
+    background: rgba(255,255,255,0.9);
+    transition: width 0.3s;
+}
+.injected-class .tooltip {
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 7px 12px;
+    background: #222;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 11px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+}
+.injected-class:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-6px);
 }
 
 /* Loading state */
@@ -184,11 +225,13 @@
 /* Responsive design */
 @media (max-width: 768px) {
     .injected-class {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        min-width: 80px;
+        max-width: 160px;
         font-size: 12px;
-        padding: 8px 14px;
-        right: 8px;
-        top: 8px;
-        border-radius: 8px;
+        padding: 4px 10px;
     }
     
     .confidence-bar {

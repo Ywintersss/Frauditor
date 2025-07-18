@@ -621,16 +621,6 @@ body.dark .wordcloud span:hover {
     }
 }
 
-.team-logo {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    margin-right: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    background: #fff;
-    object-fit: contain;
-}
-
 #gifExportBtn {
     background: linear-gradient(135deg, #667eea 0%, #38ef7d 100%);
     color: #fff;
