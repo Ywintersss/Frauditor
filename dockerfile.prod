@@ -25,9 +25,6 @@ COPY backend/. .
 # Expose port
 EXPOSE 8000
 
-# Apply migrations
-RUN python manage.py migrate
-
 # Collect static files (WhiteNoise-compatible)
 RUN python manage.py collectstatic --noinput
 
