@@ -85,7 +85,6 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) for deta
 
 ## 🏆 Recognition
 
-- Built for FutureHack Hackathon 2025
 - Focused on solving real e-commerce challenges in Malaysia
 - Developed by Team Fighting
 
