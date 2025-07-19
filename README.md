@@ -7,7 +7,15 @@
 
 Frauditor is a cutting-edge Chrome extension that uses advanced AI and Natural Language Processing to detect fake reviews on Malaysian e-commerce platforms in real-time. Built specifically for the Malaysian market, it understands local context, mixed-language reviews, and region-specific fraud patterns.
 
+<p align="center">
+<img width="180" height="180" alt="logo" src="https://github.com/user-attachments/assets/e8ac4801-4be7-4913-aef1-c6a8e614a2df" />
+</p>
+
+
+<p align="center">Fake Review Detection System for Shopee.</p>
+
 [Frauditor Demo](https://github.com/user-attachments/assets/83a5608d-a43b-429e-b86e-a125d009a24f)
+
 
 ## 🌟 Key Features
 
